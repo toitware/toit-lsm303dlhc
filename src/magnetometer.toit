@@ -10,7 +10,7 @@ import math
 Driver for the magnetometer of the LSM303DLHC module.
 */
 class Magnetometer:
-  static I2C_ADDRESS ::= 0x11110  // 5.1.3.
+  static I2C_ADDRESS ::= 0b11110  // 5.1.3.
 
   // 6. Register mapping.
   static CRA_REG_M_ ::= 0x00
@@ -22,7 +22,6 @@ class Magnetometer:
   static OUT_Z_L_M_ ::= 0x06
   static OUT_Y_H_M_ ::= 0x07
   static OUT_Y_L_M_ ::= 0x08
-  static SR_REG_MG_ ::= 0x09
   static IRA_REG_M_ ::= 0x0A
   static IRB_REG_M_ ::= 0x0B
   static IRC_REG_M_ ::= 0x0C

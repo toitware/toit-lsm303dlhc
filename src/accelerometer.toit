@@ -41,35 +41,13 @@ class Accelerometer:
 
   // 6. Register mapping.
   static CTRL_REG1_A_ ::= 0x20
-  static CTRL_REG2_A_ ::= 0x21
-  static CTRL_REG3_A_ ::= 0x22
   static CTRL_REG4_A_ ::= 0x23
-  static CTRL_REG5_A_ ::= 0x24
-  static CTRL_REG6_A_ ::= 0x25
-  static REFERENCE_A_ ::= 0x26
-  static STATUS_REG_A_ ::= 0x27
   static OUT_X_L_A_ ::= 0x28
   static OUT_X_H_A_ ::= 0x29
   static OUT_Y_L_A_ ::= 0x2A
   static OUT_Y_H_A_ ::= 0x2B
   static OUT_Z_L_A_ ::= 0x2C
   static OUT_Z_H_A_ ::= 0x2D
-  static FIFO_CTRL_REG_A_ ::= 0x2E
-  static FIFO_SRC_REG_A_ ::= 0x2F
-  static INT1_CFG_A_ ::= 0x30
-  static INT1_SOURCE_A_ ::= 0x31
-  static INT1_THS_A_ ::= 0x32
-  static INT1_DURATION_A_ ::= 0x33
-  static INT2_CFG_A_ ::= 0x34
-  static INT2_SOURCE_A_ ::= 0x35
-  static INT2_THS_A_ ::= 0x36
-  static INT2_DURATION_A_ ::= 0x37
-  static CLICK_CFG_A_ ::= 0x38
-  static CLICK_SRC_ ::= 0x39
-  static CLICK_THS_ ::= 0x3A
-  static TIME_LIMIT_A_ ::= 0x3B
-  static TIME_LATENCY_A_ ::= 0x3C
-  static TIME_WINDOW_A_ ::= 0x3D
 
   /**
   Standard acceleration due to gravity.
@@ -180,26 +158,17 @@ class Accelerometer:
   The returned values are in in m/s².
   */
   read -> math.Point3f:
-    /*
-    // TODO(florian): can we use `read_i16_le` ?
-    x := reg_.read_i16_le OUT_X_L_A_
-    y := reg_.read_i16_le OUT_Y_L_A_
-    z := reg_.read_i16_le OUT_Z_L_A_
-    */
-    x_low := reg_.read_u8 OUT_X_L_A_
-    x_high := reg_.read_u8 OUT_X_H_A_
-    y_low := reg_.read_u8 OUT_Y_L_A_
-    y_high := reg_.read_u8 OUT_Y_H_A_
-    z_low := reg_.read_u8 OUT_Z_L_A_
-    z_high := reg_.read_u8 OUT_Z_H_A_
+    x_low  := reg_.read_u8 OUT_X_L_A_
+    x_high := reg_.read_i8 OUT_X_H_A_
+    y_low  := reg_.read_u8 OUT_Y_L_A_
+    y_high := reg_.read_i8 OUT_Y_H_A_
+    z_low  := reg_.read_u8 OUT_Z_L_A_
+    z_high := reg_.read_i8 OUT_Z_H_A_
 
     x := (x_high << 8) + x_low
     y := (y_high << 8) + y_low
     z := (z_high << 8) + z_low
-    if (x & 0x8000 != 0): x = -(0x10000) + x
-    if (y & 0x8000 != 0): y = -(0x10000) + y
-    if (z & 0x8000 != 0): z = -(0x10000) + z
-    
+
     // The scaling (range) affects the value, so we need to read that one.
     // We could also cache the current scaling so we don't need to do yet
     // another I2C call.
