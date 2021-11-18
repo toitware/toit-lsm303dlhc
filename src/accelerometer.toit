@@ -1,5 +1,5 @@
 // Copyright (C) 2021 Toitware ApS. All rights reserved.
-// Use of this source code is governed by a MIT-style license that can be found
+// Use of this source code is governed by an MIT-style license that can be found
 // in the LICENSE file.
 
 import serial.device as serial
@@ -120,7 +120,7 @@ class Accelerometer:
 
     low_power_bit := mode == MODE_LOW_POWER ? 0b1000 : 0b0000
 
-    // We always enable all three axis.
+    // We always enable all three axes.
     axis_bits := 0b111
 
     reg1_value := rate_bits | low_power_bit | axis_bits
@@ -140,7 +140,6 @@ class Accelerometer:
     reg_.write_u8 CTRL_REG4_A_ reg4_value
 
     sleep --ms=10
-
 
   /**
   Disables the accelerometer.
