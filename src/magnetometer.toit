@@ -129,7 +129,7 @@ class Magnetometer:
 
   /**
   Reads the magnetic field.
-  The returned values are in micro-tesla.
+  The returned values are in microtesla.
   If a value is out of range, +-$float.INFINITY is used. In this case
     changing the range (see $enable) might be an option to allow the
     sensor to measure the magnetic field.
@@ -152,3 +152,14 @@ class Magnetometer:
         x_converted
         y_converted
         z_converted
+
+  /**
+  Reads the raw magnetic field values.
+  */
+  read --raw -> List:
+    if not raw: throw "INVALID_ARGUMENT"
+    return [
+      reg_.read_i16_be OUT_X_H_M_,
+      reg_.read_i16_be OUT_Z_H_M_,
+      reg_.read_i16_be OUT_Y_H_M_,
+    ]

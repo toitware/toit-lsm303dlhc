@@ -15,12 +15,19 @@ main:
   magnetometer := Magnetometer (bus.device Magnetometer.I2C_ADDRESS)
 
   accelerometer.enable
-  acceleration := accelerometer.read
-  print "Acceleration (in m/s²): $acceleration"
-
   magnetometer.enable
-  field := magnetometer.read
-  print "Magnetic field (in micro-tesla): $field"
 
-  temp := magnetometer.read_temperature
-  print "Temperature (in C): $temp"
+  while true:
+    acceleration := accelerometer.read
+    print "Acceleration (in m/s²): $acceleration"
+
+    field := magnetometer.read
+    print "Magnetic field (in microtesla): $field"
+
+    field2 := magnetometer.read --raw
+    print "Magnetic field (raw): $field2"
+
+    temp := magnetometer.read_temperature
+    print "Temperature (in C): $temp"
+
+    sleep --ms=300
