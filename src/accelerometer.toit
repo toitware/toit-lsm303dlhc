@@ -103,16 +103,16 @@ class Accelerometer:
     // 7.1.1. CTRL_REG1_A.
     rate_bits := ?
     // Table 20. Data rate configuration.
-    if rate == 1:         rate_bits = 0b0001_0000
-    else if rate == 10:   rate_bits = 0b0010_0000
-    else if rate == 25:   rate_bits = 0b0011_0000
-    else if rate == 50:   rate_bits = 0b0100_0000
-    else if rate == 100:  rate_bits = 0b0101_0000
-    else if rate == 200:  rate_bits = 0b0110_0000
-    else if rate == 400:  rate_bits = 0b0111_0000
-    else if rate == 1620 and mode == MODE_LOW_POWER: rate_bits = 0b1000_0000
-    else if rate == 1344 and mode != MODE_LOW_POWER: rate_bits = 0b1001_0000
-    else if rate == 5376 and mode == MODE_LOW_POWER: rate_bits = 0b1001_0000
+    if rate == RATE_1HZ:         rate_bits = 0b0001_0000
+    else if rate == RATE_10HZ:   rate_bits = 0b0010_0000
+    else if rate == RATE_25HZ:   rate_bits = 0b0011_0000
+    else if rate == RATE_50HZ:   rate_bits = 0b0100_0000
+    else if rate == RATE_100HZ:  rate_bits = 0b0101_0000
+    else if rate == RATE_200HZ:  rate_bits = 0b0110_0000
+    else if rate == RATE_400HZ:  rate_bits = 0b0111_0000
+    else if rate == RATE_1620HZ and mode == MODE_LOW_POWER: rate_bits = 0b1000_0000
+    else if rate == RATE_1344HZ and mode != MODE_LOW_POWER: rate_bits = 0b1001_0000
+    else if rate == RATE_5376HZ and mode == MODE_LOW_POWER: rate_bits = 0b1001_0000
     else: throw "INVALID_RATE"
 
     assert: MODE_NORMAL == 0 and MODE_LOW_POWER == 1 and MODE_HIGH_RESOLUTION == 2
