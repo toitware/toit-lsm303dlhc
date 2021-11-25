@@ -158,8 +158,7 @@ class Magnetometer:
   */
   read --raw -> List:
     if not raw: throw "INVALID_ARGUMENT"
-    return [
-      reg_.read_i16_be OUT_X_H_M_,
-      reg_.read_i16_be OUT_Z_H_M_,
-      reg_.read_i16_be OUT_Y_H_M_,
-    ]
+    x := reg_.read_i16_be OUT_X_H_M_
+    z := reg_.read_i16_be OUT_Z_H_M_
+    y := reg_.read_i16_be OUT_Y_H_M_
+    return [ x, y, z ]
