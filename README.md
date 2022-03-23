@@ -6,6 +6,7 @@ Driver for the LSM303DLHC accelerometer and magnetometer.
 This driver does not fully work with the LSM303AGR. The magnetometer
 of the LSM303AGR is different. However, the accelerometer should work.
 
-Other variants (like the LSM303D, LSM303DLH, or LSM303DLM) have not
-been tested. They are unlikely to work without modifications to this
-driver.
+## References
+
+Documentation for the LSM303DLHC: https://www.st.com/en/mems-and-sensors/lsm303dlhc.html#documentation
+The Datasheet is [DS7202](https://www.st.com/resource/en/datasheet/lsm303dlhc.pdf).
