@@ -157,16 +157,10 @@ class Accelerometer:
   The returned values are in in m/s².
   */
   read -> math.Point3f:
-    x_low  := reg_.read_u8 OUT_X_L_A_
-    x_high := reg_.read_i8 OUT_X_H_A_
-    y_low  := reg_.read_u8 OUT_Y_L_A_
-    y_high := reg_.read_i8 OUT_Y_H_A_
-    z_low  := reg_.read_u8 OUT_Z_L_A_
-    z_high := reg_.read_i8 OUT_Z_H_A_
-
-    x := (x_high << 8) + x_low
-    y := (y_high << 8) + y_low
-    z := (z_high << 8) + z_low
+    AUTO_INCREMENT_BIT ::= 0b1000_0000
+    x := reg_.read_i16_le (OUT_X_L_A_ | AUTO_INCREMENT_BIT)
+    y := reg_.read_i16_le (OUT_Y_L_A_ | AUTO_INCREMENT_BIT)
+    z := reg_.read_i16_le (OUT_Z_L_A_ | AUTO_INCREMENT_BIT)
 
     // The scaling (range) affects the value, so we need to read that one.
     // We could also cache the current scaling so we don't need to do yet
