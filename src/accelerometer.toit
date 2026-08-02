@@ -4,6 +4,7 @@
 
 import serial.device as serial
 import serial.registers as serial
+import io
 import math
 
 /**
@@ -48,6 +49,9 @@ class Accelerometer:
   static OUT_Y_H_A_ ::= 0x2B
   static OUT_Z_L_A_ ::= 0x2C
   static OUT_Z_H_A_ ::= 0x2D
+
+  static BDU_BIT_ ::= 1 << 7
+  static AUTO_INCREMENT_BIT_ ::= 1 << 7
 
   /**
   Standard acceleration due to gravity.
@@ -128,9 +132,10 @@ class Accelerometer:
 
     // 7.1.4. CTRL_REG4_A.
     // Table 27. CTRL_REG4_A description.
-    // Set Block data update to 0. (continuous update).
     // Set Big/little endian data selection to 0. (LSB at lower address).
     reg4_value := 0
+    // Prevent an update while output bytes are being read.
+    reg4_value |= BDU_BIT_
 
     if not 0 <= range < 4: throw "INVALID_RANGE"
     reg4_value |= range << 4
@@ -159,10 +164,10 @@ class Accelerometer:
   The returned values are in in m/s².
   */
   read -> math.Point3f:
-    AUTO_INCREMENT_BIT ::= 0b1000_0000
-    x := reg_.read_i16_le (OUT_X_L_A_ | AUTO_INCREMENT_BIT)
-    y := reg_.read_i16_le (OUT_Y_L_A_ | AUTO_INCREMENT_BIT)
-    z := reg_.read_i16_le (OUT_Z_L_A_ | AUTO_INCREMENT_BIT)
+    raw := read_raw_
+    x := raw[0]
+    y := raw[1]
+    z := raw[2]
 
     // Section 2.1, table3:
     // The linear acceleration sensitivity depends on the range:
@@ -197,3 +202,11 @@ class Accelerometer:
   read_range -> int:
     reg4 := reg_.read_u8 CTRL_REG4_A_
     return (reg4 >> 4) & 0b11
+
+  read_raw_ -> List:
+    bytes := reg_.read_bytes (OUT_X_L_A_ | AUTO_INCREMENT_BIT_) 6
+    return [
+      io.LITTLE_ENDIAN.int16 bytes 0,
+      io.LITTLE_ENDIAN.int16 bytes 2,
+      io.LITTLE_ENDIAN.int16 bytes 4,
+    ]
