@@ -10,8 +10,8 @@ main:
     --sda=21
     --scl=22
 
-  accelerometer := Accelerometer (bus.device Accelerometer.I2C_ADDRESS)
-  magnetometer := Magnetometer (bus.device Magnetometer.I2C_ADDRESS)
+  accelerometer := Accelerometer (bus.device Accelerometer.I2C-ADDRESS)
+  magnetometer := Magnetometer (bus.device Magnetometer.I2C-ADDRESS)
 
   accelerometer.enable
   magnetometer.enable
@@ -26,7 +26,7 @@ main:
     field2 := magnetometer.read --raw
     print "Magnetic field (raw): $field2"
 
-    temp := magnetometer.read_temperature
+    temp := magnetometer.read-temperature
     print "Temperature (in C): $temp"
 
     sleep --ms=300
