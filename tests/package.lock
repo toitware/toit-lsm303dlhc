@@ -1,0 +1,6 @@
+sdk: ^2.0.0-alpha.196
+prefixes:
+  lsm303dlhc: toit-lsm303dlhc
+packages:
+  toit-lsm303dlhc:
+    path: ..

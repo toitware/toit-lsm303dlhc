@@ -4,6 +4,7 @@
 
 import serial.device as serial
 import serial.registers as serial
+import io
 import math
 
 /**
@@ -117,8 +118,8 @@ class Magnetometer:
   */
   read_temperature -> float:
     // 7.2.9, Table 86.
-    // 12 bit signed integer shifted by 4. In other words: a 16 bit integer with
-    //   the least significant 4 bits not used.
+    // Unlike the LSM303D, the LSM303DLHC stores temperature left-justified.
+    // The value is a left-justified, 12-bit two's complement integer.
     // 8 steps per degree. This means that there are 3 fractional bits.
     // If we just wanted to return an integer temperature value we could
     //   return `value >> 7`.
@@ -135,18 +136,19 @@ class Magnetometer:
     sensor to measure the magnetic field.
   */
   read -> math.Point3f:
-    x := reg_.read_i16_be OUT_X_H_M_
-    z := reg_.read_i16_be OUT_Z_H_M_
-    y := reg_.read_i16_be OUT_Y_H_M_
+    raw := read_raw_
+    x := raw[0]
+    y := raw[1]
+    z := raw[2]
 
     x_converted := x * GAUSS_TO_MICROTESLA_ / gain_xy_
     y_converted := y * GAUSS_TO_MICROTESLA_ / gain_xy_
     z_converted := z * GAUSS_TO_MICROTESLA_ / gain_z_
 
     // Check for saturation.
-    if not -2048 < x < 2047: x_converted = x.sign * float.INFINITY
-    if not -2048 < y < 2047: y_converted = y.sign * float.INFINITY
-    if not -2048 < z < 2047: z_converted = z.sign * float.INFINITY
+    if not -2048 <= x <= 2047: x_converted = x.sign * float.INFINITY
+    if not -2048 <= y <= 2047: y_converted = y.sign * float.INFINITY
+    if not -2048 <= z <= 2047: z_converted = z.sign * float.INFINITY
 
     return math.Point3f
         x_converted
@@ -158,7 +160,12 @@ class Magnetometer:
   */
   read --raw -> List:
     if not raw: throw "INVALID_ARGUMENT"
-    x := reg_.read_i16_be OUT_X_H_M_
-    z := reg_.read_i16_be OUT_Z_H_M_
-    y := reg_.read_i16_be OUT_Y_H_M_
-    return [ x, y, z ]
+    return read_raw_
+
+  read_raw_ -> List:
+    bytes := reg_.read_bytes OUT_X_H_M_ 6
+    return [
+      io.BIG_ENDIAN.int16 bytes 0,
+      io.BIG_ENDIAN.int16 bytes 4,
+      io.BIG_ENDIAN.int16 bytes 2,
+    ]
